@@ -26,12 +26,18 @@ describe("GET /api/channels/:channelId/playlist/items pagination", () => {
        VALUES (?, ?, ?, ?, ?)`,
     );
     for (let i = 0; i < 120; i += 1) {
-      insertItem.run(`item-${i}`, channelId, i, `Title ${i}`, Date.now());
+      insertItem.run(`item-${i}`, channelId, i, `Title ${i}`, 1000 + i);
     }
 
     const list = await fetchAllItemsViaPaging(app, channelId, 50);
     expect(list.totalCount).toBe(120);
     expect(typeof list.serverFingerprint).toBe("string");
     expect(new Set(list.items.map((item) => item.itemId)).size).toBe(120);
+
+    const indexes = list.items.map((item) => item.index);
+    expect(indexes).toEqual(Array.from({ length: 120 }, (_, i) => i));
+
+    const ids = list.items.map((item) => item.itemId);
+    expect(ids).toEqual(Array.from({ length: 120 }, (_, i) => `item-${i}`));
   });
 });
