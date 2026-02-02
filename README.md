@@ -22,7 +22,7 @@ API overview
 - `POST /api/channels/:channelId/playlist/sync-check` -> fingerprint match/mismatch
 
 Notes on CORS
-- CORS is enabled globally with `Access-Control-Allow-Origin: *` for simplicity in this assignment.
+- CORS is enabled globally for `http://localhost:5173`, `http://localhost:3000`, and `https://broadcaster-playlist-service.lovable.app`.
 - Allowed methods: GET, POST, DELETE, OPTIONS.
 - Allowed headers: Content-Type.
 

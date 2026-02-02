@@ -6,8 +6,18 @@ import { playlistRouter } from "./routes/playlist.js";
 
 export function createApp({ db } = {}) {
   const app = express();
+  const allowedOrigins = new Set([
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://broadcaster-playlist-service.lovable.app",
+  ]);
   const corsOptions = {
-    origin: "*",
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.has(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    },
     methods: ["GET", "POST", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   };

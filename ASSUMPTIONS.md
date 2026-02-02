@@ -8,3 +8,4 @@ Assumptions
 - `nextCursor` is the last item’s `idx` when there are more items; `null` means the end.
 - Pagination can change if the playlist mutates between page fetches.
 - Clients detect staleness before mutations via fingerprint mismatch (409).
+- CORS is restricted to `http://localhost:5173`, `http://localhost:3000`, and `https://broadcaster-playlist-service.lovable.app`.
