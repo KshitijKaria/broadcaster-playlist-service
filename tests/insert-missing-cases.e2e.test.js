@@ -69,6 +69,47 @@ describe("Insert edge cases and validation", () => {
     expect(list.items[5].itemId).toBe("item-4");
   });
 
+  it("inserts at start and shifts existing items", async () => {
+    current = createTestDb();
+    const app = createApp({ db: current.db });
+    const channelId = "demo-news";
+
+    seedItems(current.db, channelId);
+    const fp = await fetchFingerprint(app, channelId);
+
+    const res = await request(app)
+      .post(`/api/channels/${channelId}/playlist/items`)
+      .send({ title: "Inserted Start", index: 0, clientFingerprint: fp });
+    expect(res.status).toBe(201);
+
+    const list = await fetchAllItemsViaPaging(app, channelId);
+    expect(list.items.length).toBe(6);
+    assertHealthyPlaylist(list.items);
+    expect(list.items[0].title).toBe("Inserted Start");
+    expect(list.items[1].itemId).toBe("item-0");
+    expect(list.items[5].itemId).toBe("item-4");
+  });
+
+  it("inserts at end without shifting existing items", async () => {
+    current = createTestDb();
+    const app = createApp({ db: current.db });
+    const channelId = "demo-news";
+
+    seedItems(current.db, channelId);
+    const fp = await fetchFingerprint(app, channelId);
+
+    const res = await request(app)
+      .post(`/api/channels/${channelId}/playlist/items`)
+      .send({ title: "Inserted End", index: 5, clientFingerprint: fp });
+    expect(res.status).toBe(201);
+
+    const list = await fetchAllItemsViaPaging(app, channelId);
+    expect(list.items.length).toBe(6);
+    assertHealthyPlaylist(list.items);
+    expect(list.items[4].itemId).toBe("item-4");
+    expect(list.items[5].title).toBe("Inserted End");
+  });
+
   it("rejects invalid request shapes and keeps playlist unchanged", async () => {
     current = createTestDb();
     const app = createApp({ db: current.db });
@@ -133,6 +174,7 @@ describe("Insert edge cases and validation", () => {
 
     seedItems(current.db, channelId);
     const fp = await fetchFingerprint(app, channelId);
+    const baseline = await fetchAllItemsViaPaging(app, channelId);
 
     const resLow = await request(app)
       .post(`/api/channels/${channelId}/playlist/items`)
@@ -140,8 +182,11 @@ describe("Insert edge cases and validation", () => {
     expectInvalid(resLow);
 
     let list = await fetchAllItemsViaPaging(app, channelId);
-    expect(list.items.length).toBe(5);
+    expect(list.totalCount).toBe(baseline.totalCount);
+    expect(list.serverFingerprint).toBe(fp);
     assertHealthyPlaylist(list.items);
+    expect(new Set(list.items.map((item) => item.itemId)))
+      .toEqual(new Set(baseline.items.map((item) => item.itemId)));
 
     const resHigh = await request(app)
       .post(`/api/channels/${channelId}/playlist/items`)
@@ -149,8 +194,11 @@ describe("Insert edge cases and validation", () => {
     expectInvalid(resHigh);
 
     list = await fetchAllItemsViaPaging(app, channelId);
-    expect(list.items.length).toBe(5);
+    expect(list.totalCount).toBe(baseline.totalCount);
+    expect(list.serverFingerprint).toBe(fp);
     assertHealthyPlaylist(list.items);
+    expect(new Set(list.items.map((item) => item.itemId)))
+      .toEqual(new Set(baseline.items.map((item) => item.itemId)));
   });
 
   it("returns mismatch on stale fingerprint and keeps playlist healthy", async () => {
