@@ -1,2 +1,10 @@
 Assumptions
-- The default database path `./data/playlist.db` is acceptable for local development.
+- Indexing is 0-based: valid playlist indexes are `0..N-1`.
+- Insert out-of-range returns 400; valid insert index is `0..N` (append allowed at `N`).
+- Move out-of-range returns 400; valid move index is `0..N-1`.
+- Deleting a missing item returns 404 with `{ errorCode: "ITEM_NOT_FOUND" }`.
+- `clientFingerprint` is passed in the JSON request body for all mutating endpoints for consistency.
+- Pagination cursor represents the last returned `idx`; the next page returns items with `idx > cursor`.
+- `nextCursor` is the last item’s `idx` when there are more items; `null` means the end.
+- Pagination can change if the playlist mutates between page fetches.
+- Clients detect staleness before mutations via fingerprint mismatch (409).
