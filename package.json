@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/KshitijKaria/broadcaster-playlist-service#readme",
   "dependencies": {
+    "better-sqlite3": "^12.6.2",
     "express": "^5.2.1"
   },
   "devDependencies": {
