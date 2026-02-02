@@ -21,6 +21,11 @@ API overview
 - `POST /api/channels/:channelId/playlist/items/:itemId/move` -> move item (requires `clientFingerprint`)
 - `POST /api/channels/:channelId/playlist/sync-check` -> fingerprint match/mismatch
 
+Notes on CORS
+- CORS is enabled globally with `Access-Control-Allow-Origin: *` for simplicity in this assignment.
+- Allowed methods: GET, POST, DELETE, OPTIONS.
+- Allowed headers: Content-Type.
+
 Notes on pagination
 - `limit` defaults to 50 (min 1, max 200).
 - `cursor` is the last returned index; the next page returns items with `index > cursor`.
