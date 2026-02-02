@@ -3,11 +3,11 @@ Broadcaster Playlist Service
 Quickstart
 - Install deps: `npm ci`
 - Run tests: `npm test`
-- Start server: `node src/index.js`
+- Start server: `npm start`
 
 Base URL
 - http://localhost:3000
-- Override port with `PORT=4000 node src/index.js`
+- Override port with `PORT=4000 npm start`
 
 SQLite persistence
 - Default DB file: `./data/playlist.db`
