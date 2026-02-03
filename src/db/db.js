@@ -34,9 +34,6 @@ export function migrate(db) {
 
     CREATE UNIQUE INDEX IF NOT EXISTS playlist_items_channel_idx_unique
       ON playlist_items(channelId, idx);
-
-    CREATE INDEX IF NOT EXISTS playlist_items_channel_idx
-      ON playlist_items(channelId, idx);
   `);
 
   const cols = db.prepare("PRAGMA table_info(channels)").all().map((c) => c.name);

@@ -11,8 +11,7 @@ Design Notes
   - `channels(channelId TEXT PRIMARY KEY, version INTEGER NOT NULL DEFAULT 1)`
   - `playlist_items(itemId TEXT PRIMARY KEY, channelId TEXT NOT NULL, idx INTEGER NOT NULL, title TEXT NOT NULL, createdAt INTEGER NOT NULL, FOREIGN KEY(channelId) REFERENCES channels(channelId))`
 - Indexes:
-  - Unique index on `(channelId, idx)` to enforce contiguous ordering.
-  - Non-unique index on `(channelId, idx)` for ordered reads and pagination.
+  - Unique index on `(channelId, idx)` to enforce contiguous ordering and support ordered reads.
 
 3. Pagination strategy
 - Cursor-based pagination using `idx` as the cursor.
